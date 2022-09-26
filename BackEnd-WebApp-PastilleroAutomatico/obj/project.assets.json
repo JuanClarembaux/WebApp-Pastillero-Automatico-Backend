@@ -2963,11 +2963,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\juanc\\source\\repos\\WebApp-PastilleroAutomatico\\BackEnd\\BackEnd-WebApp-PastilleroAutomatico\\BackEnd-WebApp-PastilleroAutomatico.csproj",
+      "projectUniqueName": "C:\\Users\\juanc\\source\\repos\\WebApp-PastilleroAutomatico\\BackEnd\\WebApp-Pastillero-Automatico-Backend\\BackEnd-WebApp-PastilleroAutomatico\\BackEnd-WebApp-PastilleroAutomatico.csproj",
       "projectName": "BackEnd-WebApp-PastilleroAutomatico",
-      "projectPath": "C:\\Users\\juanc\\source\\repos\\WebApp-PastilleroAutomatico\\BackEnd\\BackEnd-WebApp-PastilleroAutomatico\\BackEnd-WebApp-PastilleroAutomatico.csproj",
+      "projectPath": "C:\\Users\\juanc\\source\\repos\\WebApp-PastilleroAutomatico\\BackEnd\\WebApp-Pastillero-Automatico-Backend\\BackEnd-WebApp-PastilleroAutomatico\\BackEnd-WebApp-PastilleroAutomatico.csproj",
       "packagesPath": "C:\\Users\\juanc\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\juanc\\source\\repos\\WebApp-PastilleroAutomatico\\BackEnd\\BackEnd-WebApp-PastilleroAutomatico\\obj\\",
+      "outputPath": "C:\\Users\\juanc\\source\\repos\\WebApp-PastilleroAutomatico\\BackEnd\\WebApp-Pastillero-Automatico-Backend\\BackEnd-WebApp-PastilleroAutomatico\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
