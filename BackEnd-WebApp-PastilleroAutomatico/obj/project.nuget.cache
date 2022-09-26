@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0qjSMDALV4XFNBI1ECs5QtVEMMpV15thxQIFZNWthew6XEEk9yaZIr70+gozuJvzATAdQDn+AeRaugoXY2o8qw==",
+  "dgSpecHash": "y8krxf3UCWnCUm//aXJZEIv3NbnGG/2ux3D/vmMKIgJ/zzPTbZmEEtbAte/+msnJ84meXe1Jyz2Y5t+/wOUxHA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\juanc\\source\\repos\\WebApp-PastilleroAutomatico\\BackEnd\\BackEnd-WebApp-PastilleroAutomatico\\BackEnd-WebApp-PastilleroAutomatico.csproj",
+  "projectFilePath": "C:\\Users\\juanc\\source\\repos\\WebApp-PastilleroAutomatico\\BackEnd\\WebApp-Pastillero-Automatico-Backend\\BackEnd-WebApp-PastilleroAutomatico\\BackEnd-WebApp-PastilleroAutomatico.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\juanc\\.nuget\\packages\\automapper\\11.0.0\\automapper.11.0.0.nupkg.sha512",
     "C:\\Users\\juanc\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
