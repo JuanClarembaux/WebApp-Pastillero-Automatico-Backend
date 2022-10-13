@@ -86,8 +86,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
             {
                 var producto = _mapper.Map<Producto>(productoDTO);
 
-                producto.FechaCreacion = DateTime.Now;
-
                 producto = await _productoRepository.AddProducto(producto);
 
                 var productoItemDTO = _mapper.Map<ProductoDTO>(producto);

@@ -1,9 +1,9 @@
 ﻿namespace BackEnd_WebApp_PastilleroAutomatico.Models.DTO
 {
-    public class UserDTO
+    public class UsuarioDTO
     {
-        //public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public string RolUsuario { get; set; } = "usuario";
     }
 }

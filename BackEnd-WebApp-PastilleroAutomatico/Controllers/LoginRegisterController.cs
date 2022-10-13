@@ -1,5 +1,7 @@
-﻿using BackEnd_WebApp_PastilleroAutomatico.Models;
+﻿using AutoMapper;
+using BackEnd_WebApp_PastilleroAutomatico.Models;
 using BackEnd_WebApp_PastilleroAutomatico.Models.DTO;
+using BackEnd_WebApp_PastilleroAutomatico.Repositories;
 using BackEnd_WebApp_PastilleroAutomatico.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,73 +17,72 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
     [ApiController]
     public class LoginRegisterController : ControllerBase
     {
-        public static User user = new User();
+        private readonly IUsuarioRepository _usuarioRepository;
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public LoginRegisterController(IConfiguration configuration, IUserService userService)
+        public LoginRegisterController(IUsuarioRepository usuarioRepository, IConfiguration configuration, IUserService userService, IMapper mapper)
         {
+            _usuarioRepository = usuarioRepository;
             _configuration = configuration;
             _userService = userService;
-        }
-
-        [HttpGet, Authorize]
-        public ActionResult<string> GetMe()
-        {
-            var userName = _userService.GetMyName();
-            return Ok(userName);
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDTO request)
+        public async Task<ActionResult<Usuario>> Register(UsuarioDTO usuarioDTO)
         {
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            user.Email = request.Email;
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            /*var emailRequest = await _usuarioRepository.GetUsuarioByEmail(usuarioDTO.Email);
 
-            return Ok(user);
+            if (emailRequest != null) return BadRequest("Email ya registrado.");
+            */
+            var usuario = _mapper.Map<Usuario>(usuarioDTO);
+
+            await _usuarioRepository.AddUsuario(usuario);
+
+            var usuarioItemDTO = _mapper.Map<UsuarioDTO>(usuario);
+            return CreatedAtAction("Get", new { id = usuarioItemDTO.Email }, usuarioItemDTO);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDTO request)
+        public async Task<ActionResult<string>> Login(UsuarioDTO usuarioDTO)
         {
-            if (user.Email != request.Email)
-            {
-                return BadRequest("User not found.");
-            }
+            var emailRequest = _usuarioRepository.GetUsuarioByEmail(usuarioDTO.Email);
 
-            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-            {
-                return BadRequest("Wrong password.");
-            }
+            if (emailRequest == null) return BadRequest("User not found.");
 
-            string token = CreateToken(user);
+            var usuario = _mapper.Map<Usuario>(usuarioDTO);
 
-            var refreshToken = GenerateRefreshToken();
-            SetRefreshToken(refreshToken);
+
+            string token = CreateToken(usuario);
+
+            /*var refreshToken = GenerateRefreshToken();
+
+            SetRefreshToken(usuario, refreshToken);
+            */
 
             return Ok(token);
         }
 
-        [HttpPost("refresh-token")]
-        public async Task<ActionResult<string>> RefreshToken()
+        /*[HttpPost("refresh-token")]
+        public async Task<ActionResult<string>> RefreshToken(Usuario usuario)
         {
             var refreshToken = Request.Cookies["refreshToken"];
 
-            if (!user.RefreshToken.Equals(refreshToken))
+            if (!usuario.RefreshToken.Equals(refreshToken))
             {
                 return Unauthorized("Invalid Refresh Token.");
             }
-            else if (user.TokenExpires < DateTime.Now)
+            else if (usuario.TokenExpires < DateTime.Now)
             {
                 return Unauthorized("Token expired.");
             }
 
-            string token = CreateToken(user);
+            string token = CreateToken(usuario);
             var newRefreshToken = GenerateRefreshToken();
-            SetRefreshToken(newRefreshToken);
+            SetRefreshToken(usuario, newRefreshToken);
 
             return Ok(token);
         }
@@ -91,14 +92,14 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddMinutes(23),
                 Created = DateTime.Now
             };
 
             return refreshToken;
         }
 
-        private void SetRefreshToken(RefreshToken newRefreshToken)
+        private void SetRefreshToken(Usuario usuario, RefreshToken newRefreshToken)
         {
             var cookieOptions = new CookieOptions
             {
@@ -107,17 +108,17 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
             };
             Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
 
-            user.RefreshToken = newRefreshToken.Token;
-            user.TokenCreated = newRefreshToken.Created;
-            user.TokenExpires = newRefreshToken.Expires;
-        }
+            usuario.RefreshToken = newRefreshToken.Token;
+            usuario.TokenCreated = newRefreshToken.Created;
+            usuario.TokenExpires = newRefreshToken.Expires;
+        }*/
 
-        private string CreateToken(User user)
+        private string CreateToken(Usuario user)
         {
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, "Admin")
+                new Claim(ClaimTypes.Role, user.RolUsuario)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -127,30 +128,12 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddMinutes(23),
                 signingCredentials: creds);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
-        }
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
         }
     }
 }

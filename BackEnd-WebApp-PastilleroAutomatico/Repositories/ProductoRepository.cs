@@ -14,8 +14,12 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Repositories
 
         public async Task<Producto> AddProducto(Producto producto)
         {
+            producto.FechaUltimaModificacion = DateTime.Now;
+
             _context.Add(producto);
+
             await _context.SaveChangesAsync();
+
             return producto;
         }
 
@@ -42,9 +46,12 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Repositories
             if (productoItem != null)
             {
                 productoItem.Nombre = producto.Nombre;
+                productoItem.Marca = producto.Marca;
                 productoItem.Descripcion = producto.Descripcion;
-                productoItem.Precio = producto.Precio;
                 productoItem.Stock = producto.Stock;
+                productoItem.FechaUltimaModificacion = DateTime.Now;
+
+                _context.Update(productoItem);
 
                 await _context.SaveChangesAsync();
             }            
