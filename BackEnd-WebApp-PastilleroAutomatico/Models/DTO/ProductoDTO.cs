@@ -2,11 +2,16 @@
 {
     public class ProductoDTO
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Marca { get; set; }
-        public string Descripcion { get; set; }
-        public int Stock { get; set; }
-        public DateTime FechaUltimaModificacion { get; set; }
+        public int IdProducto { get; set; }
+        public string NombreProducto { get; set; } = null!;
+        public string? MarcaProducto { get; set; }
+        public string? DescripcionProducto { get; set; }
+        public string? CategoriaProducto { get; set; }
+        public decimal? PrecioProducto { get; set; }
+        public string? SkuProducto { get; set; }
+        public bool ActivoProducto { get; set; }
+        public DateTime FechaCreacionProducto { get; set; }
+        public DateTime? FechaModificacionProducto { get; set; }
+        public DateTime? FechaEliminacionProducto { get; set; }
     }
 }

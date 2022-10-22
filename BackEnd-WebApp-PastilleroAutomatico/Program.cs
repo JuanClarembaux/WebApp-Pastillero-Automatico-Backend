@@ -1,6 +1,8 @@
+global using BackEnd_WebApp_PastilleroAutomatico.Databases;
 using BackEnd_WebApp_PastilleroAutomatico.Models;
 using BackEnd_WebApp_PastilleroAutomatico.Repositories;
 using BackEnd_WebApp_PastilleroAutomatico.Services;
+using BackEnd_WebApp_PastilleroAutomatico.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,11 +13,11 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IPersonaRepository, PersonaRepository>();
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
-builder.Services.AddScoped<IPrecioRepository, PrecioRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+/*builder.Services.AddScoped<IUserService, UserService>();*/
+
+builder.Services.AddDbContext<ECommerce_GenericoContext>();
+
+builder.Services.AddScoped<IUnitOfWorkRepository, UnitOfWorkRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -56,10 +58,10 @@ builder.Services.AddCors(options =>
 options.AddPolicy("AllowWebapp", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
 // Add Context
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionDB"));
-});
+});*/
 
 // Automapper
 builder.Services.AddAutoMapper(typeof(Program));

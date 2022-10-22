@@ -2,8 +2,13 @@
 {
     public class UsuarioDTO
     {
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string RolUsuario { get; set; } = "usuario";
+        public int IdUsuario { get; set; }
+        public string MailUsuario { get; set; } = null!;
+        public string PasswordUsuario { get; set; } = null!;
+        public string RolUsuario { get; set; } = null!;
+        public bool ActivoUsuario { get; set; }
+        public DateTime FechaCreacionUsuario { get; set; }
+        public DateTime? FechaModificacionUsuario { get; set; }
+        public DateTime? FechaEliminacionUsuario { get; set; }
     }
 }

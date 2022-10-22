@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using BackEnd_WebApp_PastilleroAutomatico.Models;
 using BackEnd_WebApp_PastilleroAutomatico.Models.DTO;
-using BackEnd_WebApp_PastilleroAutomatico.Repositories;
-using Microsoft.AspNetCore.Http;
+using BackEnd_WebApp_PastilleroAutomatico.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 
 namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
 {
@@ -13,12 +10,12 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
     [ApiController]
     public class ProductoController : ControllerBase
     {
-        private readonly IProductoRepository _productoRepository;
+        private readonly IUnitOfWorkRepository _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ProductoController(IProductoRepository productoRepository, IMapper mapper)
+        public ProductoController(IUnitOfWorkRepository unitOfWork, IMapper mapper)
         {
-            _productoRepository = productoRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -26,8 +23,8 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
         public async Task<IActionResult> Get()
         {
             try
-            {
-                var listadoProducto = await _productoRepository.GetListProducto();
+            {                
+                var listadoProducto = _unitOfWork.iProductoRepository.GetAll().Where(x => x.ActivoProducto == true);
 
                 var listadoProductoDTO = _mapper.Map<IEnumerable<ProductoDTO>>(listadoProducto);
 
@@ -37,13 +34,13 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
+        }        
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var producto = await _productoRepository.GetProducto(id);
+                var producto = _unitOfWork.iProductoRepository.findId(id);
 
                 if (producto == null) return NotFound();
 
@@ -62,14 +59,19 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
         {
             try
             {
-                var producto = await _productoRepository.GetProducto(id);
+                var producto = _unitOfWork.iProductoRepository.findId(id);
 
                 if (producto == null)
                 {
                     return NotFound();
                 }
 
-                await _productoRepository.DeleteProducto(producto);
+                //_unitOfWork.iProductoRepository.Delete(producto);
+                producto.ActivoProducto = false;
+                producto.FechaEliminacionProducto = DateTime.Now;
+
+                _unitOfWork.iProductoRepository.Update(producto);
+                _unitOfWork.SaveChanges();
 
                 return NoContent();
             }
@@ -86,11 +88,19 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
             {
                 var producto = _mapper.Map<Producto>(productoDTO);
 
-                producto = await _productoRepository.AddProducto(producto);
+                producto.ActivoProducto = true;
+                producto.FechaCreacionProducto = DateTime.Now;
+                producto.FechaModificacionProducto = null;
+                producto.FechaEliminacionProducto = null;
+
+                _unitOfWork.iProductoRepository.Add(producto);
+
+                _unitOfWork.SaveChanges();
 
                 var productoItemDTO = _mapper.Map<ProductoDTO>(producto);
 
-                return CreatedAtAction("Get", new { id = productoItemDTO.Id }, productoItemDTO);
+                //return CreatedAtAction("Get", new { id = productoItemDTO.Id }, productoItemDTO);
+                return CreatedAtAction("Get", producto);
             }
             catch (Exception ex)
             {
@@ -103,15 +113,26 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
         {
             try
             {
+                if (id == null) return BadRequest();
+
+                var productoItem = _unitOfWork.iProductoRepository.findId(id);
+
+                if (productoItem == null) return NotFound();
+
                 var producto = _mapper.Map<Producto>(productoDTO);
 
-                if (id != producto.Id) return BadRequest();
+                productoItem.NombreProducto = producto.NombreProducto;
+                productoItem.MarcaProducto = producto.MarcaProducto;
+                productoItem.DescripcionProducto = producto.DescripcionProducto;
+                productoItem.CategoriaProducto = producto.CategoriaProducto;
+                productoItem.PrecioProducto = producto.PrecioProducto;
+                productoItem.SkuProducto = producto.SkuProducto;
+                productoItem.ActivoProducto = producto.ActivoProducto;
+                productoItem.FechaModificacionProducto = DateTime.Now;
 
-                var productoItem = await _productoRepository.GetProducto(id);
+                _unitOfWork.iProductoRepository.Update(productoItem);
 
-                if(productoItem == null) return NotFound();
-
-                await _productoRepository.UpdateProducto(producto);
+                _unitOfWork.SaveChanges();
 
                 return NoContent();
             }
