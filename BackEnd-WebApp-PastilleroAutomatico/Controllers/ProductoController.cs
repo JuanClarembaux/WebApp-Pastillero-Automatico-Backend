@@ -127,7 +127,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
                 productoItem.CategoriaProducto = producto.CategoriaProducto;
                 productoItem.PrecioProducto = producto.PrecioProducto;
                 productoItem.SkuProducto = producto.SkuProducto;
-                productoItem.ActivoProducto = producto.ActivoProducto;
                 productoItem.FechaModificacionProducto = DateTime.Now;
 
                 _unitOfWork.iProductoRepository.Update(productoItem);
