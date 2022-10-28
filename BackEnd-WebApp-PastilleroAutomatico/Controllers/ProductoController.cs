@@ -2,7 +2,10 @@
 using BackEnd_WebApp_PastilleroAutomatico.Models;
 using BackEnd_WebApp_PastilleroAutomatico.Models.DTO;
 using BackEnd_WebApp_PastilleroAutomatico.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Rotativa.AspNetCore;
+using Wkhtmltopdf.NetCore;
 
 namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
 {
@@ -12,14 +15,17 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
     {
         private readonly IUnitOfWorkRepository _unitOfWork;
         private readonly IMapper _mapper;
+        //private readonly IGeneratePdf _generatePDF;
 
-        public ProductoController(IUnitOfWorkRepository unitOfWork, IMapper mapper)
+        public ProductoController(IUnitOfWorkRepository unitOfWork, IMapper mapper/*, IGeneratePdf generatePdf*/)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            //_generatePDF = generatePdf;
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Get()
         {
             try
@@ -36,6 +42,7 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
             }
         }        
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> Get(int id)
         {
             try
@@ -55,6 +62,7 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -82,6 +90,7 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Post(ProductoDTO productoDTO)
         {
             try
@@ -109,6 +118,7 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> Put(int id, ProductoDTO productoDTO)
         {
             try
@@ -140,5 +150,40 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        /*
+        [HttpPost("/facturaPDF")]
+        public /*async Task<// byte[]/*> // GenerarFacturaPDF(/*ProductoDTO productoDTO*///)
+        //{
+            /*var producto = _mapper.Map<Producto>(productoDTO);
+
+            return new ViewAsPdf("GenerarFacturaPDF", producto)
+            {
+                FileName = $"Venta x.pdf",
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+            };*/
+
+
+        /*    var html = @"<!DOCTYPE html>
+                        <html>
+                        <head>
+                        </head>
+                        <body>
+                            <header>
+                                <h1>This is a hardcoded test</h1>
+                            </header>
+                            <div>
+                                <h2>456789</h2>
+                            </div>
+                        </body>";
+
+            var pdf = _generatePDF.GetPDF(html);
+            /*var pdfStream = new System.IO.MemoryStream();
+            pdfStream.Write(pdf, 0, pdf.Length);
+            pdfStream.Position = 0;*/
+        /*    return pdf;
+
+        }
+        */
     }
 }

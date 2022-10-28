@@ -1,19 +1,19 @@
 global using BackEnd_WebApp_PastilleroAutomatico.Databases;
-using BackEnd_WebApp_PastilleroAutomatico.Models;
-using BackEnd_WebApp_PastilleroAutomatico.Repositories;
-using BackEnd_WebApp_PastilleroAutomatico.Services;
 using BackEnd_WebApp_PastilleroAutomatico.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Microsoft.OpenApi.Models;
+using Wkhtmltopdf.NetCore;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 /*builder.Services.AddScoped<IUserService, UserService>();*/
+
+// Rotativa Services
+builder.Services.AddWkhtmltopdf();
 
 builder.Services.AddDbContext<ECommerce_GenericoContext>();
 
