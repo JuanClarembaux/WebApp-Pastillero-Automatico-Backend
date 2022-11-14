@@ -5,7 +5,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.UnitOfWork
     public interface IUnitOfWorkRepository : IDisposable
     {
         IFacturaRepository iFacturaRepository { get; }
-        IFacturaDetalleRepository iFacturaDetalleRepository { get; }
         IProductoRepository iProductoRepository { get; }
         IProductoInventarioRepository iProductoInventarioRepository { get; }
         IProductoDescuentoRepository iProductoDescuentoRepository { get; }

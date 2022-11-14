@@ -10,5 +10,11 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Repositories.Repos
         {
             _context = context;
         }
+        public UsuarioDetalle FindByUserID(int usuarioID)
+        {
+            var comprobacion = dbSet.SingleOrDefault(x => x.UsuarioId == usuarioID);
+            if (comprobacion == null) return null;
+            return comprobacion;
+        }
     }
 }

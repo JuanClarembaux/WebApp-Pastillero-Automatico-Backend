@@ -13,5 +13,15 @@
         public DateTime FechaCreacionProducto { get; set; }
         public DateTime? FechaModificacionProducto { get; set; }
         public DateTime? FechaEliminacionProducto { get; set; }
+
+        public ProductoDTO(string? NombreProducto, string? MarcaProducto, string? DescripcionProducto, string? CategoriaProducto, decimal? PrecioProducto, string? SkuProducto)
+        {
+            this.NombreProducto = NombreProducto;
+            this.MarcaProducto = MarcaProducto;
+            this.DescripcionProducto = DescripcionProducto;
+            this.CategoriaProducto = CategoriaProducto;
+            this.PrecioProducto = PrecioProducto;
+            this.SkuProducto = SkuProducto;
+        }
     }
 }

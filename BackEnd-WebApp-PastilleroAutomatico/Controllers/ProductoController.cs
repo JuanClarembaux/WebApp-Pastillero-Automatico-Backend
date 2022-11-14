@@ -4,8 +4,6 @@ using BackEnd_WebApp_PastilleroAutomatico.Models.DTO;
 using BackEnd_WebApp_PastilleroAutomatico.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Rotativa.AspNetCore;
-using Wkhtmltopdf.NetCore;
 
 namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
 {
@@ -88,14 +86,24 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Post(ProductoDTO productoDTO)
+        public async Task<IActionResult> Post(ProductoEInventarioDTO productoEInventarioDTO)
         {
             try
             {
+                var productoRequest = _unitOfWork.iProductoRepository.FindByName(productoEInventarioDTO.NombreProducto);
+
+                if (productoRequest != null) return BadRequest("Ya existe un producto con ese nombre.");
+
+
+                ProductoDTO productoDTO = new ProductoDTO(productoEInventarioDTO.NombreProducto, productoEInventarioDTO.MarcaProducto, productoEInventarioDTO.DescripcionProducto,
+                                                            productoEInventarioDTO.CategoriaProducto, productoEInventarioDTO.PrecioProducto, productoEInventarioDTO.SkuProducto);
+                ProductoInventarioDTO productoInventarioDTO = new ProductoInventarioDTO(productoEInventarioDTO.NombreProductoInventario, productoEInventarioDTO.CantidadProductoInventario);
+
                 var producto = _mapper.Map<Producto>(productoDTO);
+                var productoInventario = _mapper.Map<ProductoInventario>(productoInventarioDTO);
 
                 producto.ActivoProducto = true;
                 producto.FechaCreacionProducto = DateTime.Now;
@@ -103,13 +111,22 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
                 producto.FechaEliminacionProducto = null;
 
                 _unitOfWork.iProductoRepository.Add(producto);
+                _unitOfWork.SaveChanges();
 
+                productoInventario.ProductoId = _unitOfWork.iProductoRepository.GetByName(productoEInventarioDTO.NombreProducto).IdProducto;
+                productoInventario.ActivoProductoInventario = true;
+                productoInventario.FechaCreacionProductoInventario = DateTime.Now;
+                productoInventario.FechaModificacionProductoInventario = null;
+                productoInventario.FechaEliminacionProductoInventario = null;
+
+                _unitOfWork.iProductoInventarioRepository.Add(productoInventario);
                 _unitOfWork.SaveChanges();
 
                 var productoItemDTO = _mapper.Map<ProductoDTO>(producto);
 
                 //return CreatedAtAction("Get", new { id = productoItemDTO.Id }, productoItemDTO);
-                return CreatedAtAction("Get", producto);
+                //return CreatedAtAction("Get", producto);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -128,6 +145,10 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Controllers
                 var productoItem = _unitOfWork.iProductoRepository.findId(id);
 
                 if (productoItem == null) return NotFound();
+
+                var productoRequest = _unitOfWork.iProductoRepository.FindByName(productoDTO.NombreProducto);
+
+                if (productoRequest != null) return BadRequest("Ya existe un producto con ese nombre.");
 
                 var producto = _mapper.Map<Producto>(productoDTO);
 

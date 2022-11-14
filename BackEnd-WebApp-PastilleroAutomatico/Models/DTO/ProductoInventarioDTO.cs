@@ -10,5 +10,11 @@
         public DateTime FechaCreacionProductoInventario { get; set; }
         public DateTime? FechaModificacionProductoInventario { get; set; }
         public DateTime? FechaEliminacionProductoInventario { get; set; }
+
+        public ProductoInventarioDTO(string NombreProductoInventario, int? CantidadProductoInventario)
+        {
+            this.NombreProductoInventario = NombreProductoInventario;
+            this.CantidadProductoInventario = CantidadProductoInventario;
+        }
     }
 }

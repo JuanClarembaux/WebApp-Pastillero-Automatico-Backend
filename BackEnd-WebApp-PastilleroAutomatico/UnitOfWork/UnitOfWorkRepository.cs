@@ -8,7 +8,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.UnitOfWork
     {
         private readonly ECommerce_GenericoContext _context;
         public IFacturaRepository iFacturaRepository { get; private set; }
-        public IFacturaDetalleRepository iFacturaDetalleRepository { get; private set; }
         public IProductoRepository iProductoRepository { get; private set; }
         public IProductoInventarioRepository iProductoInventarioRepository { get; private set; }
         public IProductoDescuentoRepository iProductoDescuentoRepository { get; private set; }
@@ -21,7 +20,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.UnitOfWork
         {
             _context = context;
             iFacturaRepository = new FacturaRepository(context);
-            iFacturaDetalleRepository = new FacturaDetalleRepository(context);
             iProductoRepository = new ProductoRepository(context);
             iProductoInventarioRepository = new ProductoInventarioRepository(context);
             iProductoDescuentoRepository = new ProductoDescuentoRepository(context);

@@ -22,7 +22,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Models
         public DateTime FechaCreacionUsuario { get; set; }
         public DateTime? FechaModificacionUsuario { get; set; }
         public DateTime? FechaEliminacionUsuario { get; set; }
-
         [JsonIgnore]
         public virtual ICollection<Factura> Facturas { get; set; }
         [JsonIgnore]

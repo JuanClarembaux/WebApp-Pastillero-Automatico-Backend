@@ -7,7 +7,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Models
     {
         public Producto()
         {
-            FacturaDetalles = new HashSet<FacturaDetalle>();
             ProductoDescuentos = new HashSet<ProductoDescuento>();
             ProductoImagens = new HashSet<ProductoImagen>();
             ProductoInventarios = new HashSet<ProductoInventario>();
@@ -25,7 +24,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Models
         public DateTime? FechaModificacionProducto { get; set; }
         public DateTime? FechaEliminacionProducto { get; set; }
 
-        public virtual ICollection<FacturaDetalle> FacturaDetalles { get; set; }
         public virtual ICollection<ProductoDescuento> ProductoDescuentos { get; set; }
         public virtual ICollection<ProductoImagen> ProductoImagens { get; set; }
         public virtual ICollection<ProductoInventario> ProductoInventarios { get; set; }

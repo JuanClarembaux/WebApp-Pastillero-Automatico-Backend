@@ -10,5 +10,12 @@
         public DateTime FechaCreacionUsuarioDetalle { get; set; }
         public DateTime? FechaModificacionUsuarioDetalle { get; set; }
         public DateTime? FechaEliminacionUsuarioDetalle { get; set; }
+
+        public UsuarioDetalleDTO(string? NombreUsuario, string? ApellidoUsuario, DateTime? FechaNacimientoUsuario)
+        {
+            this.NombreUsuario = NombreUsuario;
+            this.ApellidoUsuario = ApellidoUsuario;
+            this.FechaNacimientoUsuario = FechaNacimientoUsuario;
+        }
     }
 }

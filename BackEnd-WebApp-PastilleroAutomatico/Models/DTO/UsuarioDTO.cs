@@ -10,5 +10,11 @@
         public DateTime FechaCreacionUsuario { get; set; }
         public DateTime? FechaModificacionUsuario { get; set; }
         public DateTime? FechaEliminacionUsuario { get; set; }
+
+        public UsuarioDTO(string mailUsuario, string passwordUsuario)
+        {
+            this.MailUsuario = mailUsuario;
+            this.PasswordUsuario = passwordUsuario;
+        }
     }
 }

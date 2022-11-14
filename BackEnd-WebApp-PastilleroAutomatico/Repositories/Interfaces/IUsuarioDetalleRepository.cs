@@ -4,5 +4,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Repositories.Interfaces
 {
     public interface IUsuarioDetalleRepository : IRepository<UsuarioDetalle>
     {
+        public UsuarioDetalle FindByUserID(int usuarioID);
     }
 }

@@ -18,7 +18,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
         }
 
         public virtual DbSet<Factura> Facturas { get; set; } = null!;
-        public virtual DbSet<FacturaDetalle> FacturaDetalles { get; set; } = null!;
         public virtual DbSet<Producto> Productos { get; set; } = null!;
         public virtual DbSet<ProductoDescuento> ProductoDescuentos { get; set; } = null!;
         public virtual DbSet<ProductoImagen> ProductoImagens { get; set; } = null!;
@@ -50,21 +49,26 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
                 entity.Property(e => e.ActivoFactura).HasColumnName("activo_factura");
 
                 entity.Property(e => e.FechaCreacionFactura)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_creacion_factura");
 
                 entity.Property(e => e.FechaEliminacionFactura)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_eliminacion_factura");
 
                 entity.Property(e => e.FechaModificacionFactura)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_modificacion_factura");
 
                 entity.Property(e => e.NumeroFactura)
-                    .HasMaxLength(75)
+                    .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("numero_factura");
+
+                entity.Property(e => e.UrlArchivoFactura)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("url_archivo_factura");
 
                 entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
 
@@ -73,48 +77,6 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
                     .HasForeignKey(d => d.UsuarioId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_factura_usuario");
-            });
-
-            modelBuilder.Entity<FacturaDetalle>(entity =>
-            {
-                entity.HasKey(e => e.IdFacturaDetalle);
-
-                entity.ToTable("factura_detalle");
-
-                entity.Property(e => e.IdFacturaDetalle).HasColumnName("id_factura_detalle");
-
-                entity.Property(e => e.CantidadProducto).HasColumnName("cantidad_producto");
-
-                entity.Property(e => e.FechaCreacionFacturaDetalle)
-                    .HasColumnType("date")
-                    .HasColumnName("fecha_creacion_factura_detalle");
-
-                entity.Property(e => e.FechaEliminacionFacturaDetalle)
-                    .HasColumnType("date")
-                    .HasColumnName("fecha_eliminacion_factura_detalle");
-
-                entity.Property(e => e.FechaModificacionFacturaDetalle)
-                    .HasColumnType("date")
-                    .HasColumnName("fecha_modificacion_factura_detalle");
-
-                entity.Property(e => e.IdFactura).HasColumnName("id_factura");
-
-                entity.Property(e => e.IdProducto).HasColumnName("id_producto");
-
-                entity.Property(e => e.PrecioTotal)
-                    .HasColumnType("money")
-                    .HasColumnName("precio_total");
-
-                entity.HasOne(d => d.IdFacturaNavigation)
-                    .WithMany(p => p.FacturaDetalles)
-                    .HasForeignKey(d => d.IdFactura)
-                    .HasConstraintName("FK_factura_detalle_factura");
-
-                entity.HasOne(d => d.IdProductoNavigation)
-                    .WithMany(p => p.FacturaDetalles)
-                    .HasForeignKey(d => d.IdProducto)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_factura_detalle_producto");
             });
 
             modelBuilder.Entity<Producto>(entity =>
@@ -133,19 +95,20 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
                     .HasColumnName("categoria_producto");
 
                 entity.Property(e => e.DescripcionProducto)
-                    .HasColumnType("text")
+                    .HasMaxLength(1500)
+                    .IsUnicode(false)
                     .HasColumnName("descripcion_producto");
 
                 entity.Property(e => e.FechaCreacionProducto)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_creacion_producto");
 
                 entity.Property(e => e.FechaEliminacionProducto)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_eliminacion_producto");
 
                 entity.Property(e => e.FechaModificacionProducto)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_modificacion_producto");
 
                 entity.Property(e => e.MarcaProducto)
@@ -179,15 +142,15 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
                 entity.Property(e => e.ActivoProductoDescuento).HasColumnName("activo_producto_descuento");
 
                 entity.Property(e => e.FechaCreacionProductoDescuento)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_creacion_producto_descuento");
 
                 entity.Property(e => e.FechaEliminacionProductoDescuento)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_eliminacion_producto_descuento");
 
                 entity.Property(e => e.FechaModificacionProductoDescuento)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_modificacion_producto_descuento");
 
                 entity.Property(e => e.NombreProductoDescuento)
@@ -209,27 +172,29 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
 
             modelBuilder.Entity<ProductoImagen>(entity =>
             {
-                entity.HasKey(e => e.IdProductoImagen);
+                entity.HasKey(e => e.IdProductoImagen)
+                    .HasName("PK_producto_imagen_1");
 
                 entity.ToTable("producto_imagen");
 
                 entity.Property(e => e.IdProductoImagen).HasColumnName("id_producto_imagen");
 
-                entity.Property(e => e.ArchivoProductoImagen)
-                    .HasColumnType("image")
-                    .HasColumnName("archivo_producto_imagen");
-
                 entity.Property(e => e.NombreProductoImagen)
-                    .HasMaxLength(50)
+                    .HasMaxLength(75)
                     .IsUnicode(false)
                     .HasColumnName("nombre_producto_imagen");
 
                 entity.Property(e => e.ProductoId).HasColumnName("producto_id");
 
+                entity.Property(e => e.UrlArchivoImagen)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("url_archivo_imagen");
+
                 entity.HasOne(d => d.Producto)
                     .WithMany(p => p.ProductoImagens)
                     .HasForeignKey(d => d.ProductoId)
-                    .HasConstraintName("FK_producto_imagen_producto");
+                    .HasConstraintName("FK_producto_imagen_producto1");
             });
 
             modelBuilder.Entity<ProductoInventario>(entity =>
@@ -245,15 +210,15 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
                 entity.Property(e => e.CantidadProductoInventario).HasColumnName("cantidad_producto_inventario");
 
                 entity.Property(e => e.FechaCreacionProductoInventario)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_creacion_producto_inventario");
 
                 entity.Property(e => e.FechaEliminacionProductoInventario)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_eliminacion_producto_inventario");
 
                 entity.Property(e => e.FechaModificacionProductoInventario)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_modificacion_producto_inventario");
 
                 entity.Property(e => e.NombreProductoInventario)
@@ -280,15 +245,15 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
                 entity.Property(e => e.ActivoUsuario).HasColumnName("activo_usuario");
 
                 entity.Property(e => e.FechaCreacionUsuario)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_creacion_usuario");
 
                 entity.Property(e => e.FechaEliminacionUsuario)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_eliminacion_usuario");
 
                 entity.Property(e => e.FechaModificacionUsuario)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_modificacion_usuario");
 
                 entity.Property(e => e.MailUsuario)
@@ -321,15 +286,15 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
                     .HasColumnName("apellido_usuario");
 
                 entity.Property(e => e.FechaCreacionUsuarioDetalle)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_creacion_usuario_detalle");
 
                 entity.Property(e => e.FechaEliminacionUsuarioDetalle)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_eliminacion_usuario_detalle");
 
                 entity.Property(e => e.FechaModificacionUsuarioDetalle)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_modificacion_usuario_detalle");
 
                 entity.Property(e => e.FechaNacimientoUsuario)
@@ -370,15 +335,15 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
                     .HasColumnName("direccion_usuario");
 
                 entity.Property(e => e.FechaCreacionUsuarioDireccion)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_creacion_usuario_direccion");
 
                 entity.Property(e => e.FechaEliminacionUsuarioDireccion)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_eliminacion_usuario_direccion");
 
                 entity.Property(e => e.FechaModificacionUsuarioDireccion)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_modificacion_usuario_direccion");
 
                 entity.Property(e => e.Pais)
@@ -410,15 +375,15 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Databases
                 entity.Property(e => e.ActivoUsuarioTelefono).HasColumnName("activo_usuario_telefono");
 
                 entity.Property(e => e.FechaCreacionUsuarioTelefono)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_creacion_usuario_telefono");
 
                 entity.Property(e => e.FechaEliminacionUsuarioTelefono)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_eliminacion_usuario_telefono");
 
                 entity.Property(e => e.FechaModificacionUsuarioTelefono)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("fecha_modificacion_usuario_telefono");
 
                 entity.Property(e => e.TelefonoUsuario)

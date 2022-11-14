@@ -8,7 +8,7 @@ namespace BackEnd_WebApp_PastilleroAutomatico.Models
         public int IdProductoImagen { get; set; }
         public int ProductoId { get; set; }
         public string NombreProductoImagen { get; set; } = null!;
-        public byte[] ArchivoProductoImagen { get; set; } = null!;
+        public string UrlArchivoImagen { get; set; } = null!;
 
         public virtual Producto Producto { get; set; } = null!;
     }
